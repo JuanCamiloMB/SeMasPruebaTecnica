@@ -5,11 +5,12 @@ const {
   addDoc,
   query,
   where,
-  getDoc,
   updateDoc,
+  getDoc,
   getDocs,
   doc,
   limit,
+  deleteDoc,
 } = require("firebase/firestore");
 
 //Initialize express app
@@ -69,6 +70,62 @@ async function updateMoto({ placa, modelo, celda }) {
   }
 }
 
+async function leavingMoto(placa) {
+  let difference;
+  let endDate;
+  try {
+    const collectionRef = collection(db, "motos");
+    const q = query(
+      collectionRef,
+      where("placa", "==", placa),
+      where("estado", "==", "INSIDE"),
+      limit(1)
+    );
+    const querySnapshot = await getDocs(q);
+    const docId = querySnapshot.docs[0].id
+    const docRef = doc(db, "motos", docId)
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      // console.log("Document data:", docSnap.data());
+      const startDate = new Date(docSnap.data().horaIngreso.seconds*1000)
+      endDate = new Date()
+      difference = calculateTimeDifference(startDate, endDate)
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log("No such document!");
+      return 'No moto with placa'
+    }
+
+    await updateDoc(docRef, {
+      estado: "LEAVE",
+      horaSalida: endDate,
+      precio: difference.hours * 1000 //1000 pesos por hora
+    });
+    const updatedDoc = await getDoc(docRef)
+    return updatedDoc.data()
+
+  } catch (e) {
+    console.error("Error Updating Moto", e);
+  }
+}
+
+async function deleteMoto(placa){
+  try{
+    const collectionRef = collection(db, "motos")
+    const q = query(
+      collectionRef,
+      where("placa", "==", placa),
+      limit(1)
+    );
+    const querySnapshot = await getDocs(q);
+    const docId = querySnapshot.docs[0].id
+    const docRef = doc(db, "motos", docId)
+    return await deleteDoc(docRef);
+  }catch(e){
+    console.error("Error Updating Moto", e);
+  }
+}
+
 function calculateTimeDifference(startDate, endDate) {
   // Ensure valid Date objects
   if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
@@ -101,18 +158,18 @@ app.post("/create", async (req, res) => {
 });
 
 app.post("/update", async (req, res) => {
-  const placa = req.body.placa;
   const data = await updateMoto(req.body);
   res.json({ message: "Data updated successfully!", data: data });
 });
 
-app.post("/delete", (req, res) => {
+app.post("/leaving", async (req, res) => {
+  const data = await leavingMoto(req.body.placa);
+  res.json({ message: "Moto leaved successfully!", data: data });
+});
+
+app.post("/delete", async(req, res) => {
   const placa = req.body.placa;
-  data.forEach((elem, index) => {
-    if (elem.placa === placa) {
-      data.splice(index, 1);
-    }
-  }); // Replace with database insert operation if using a database
+  const data = await deleteMoto(placa)
   res.json({ message: "Data deleted successfully!", data: data });
 });
 
