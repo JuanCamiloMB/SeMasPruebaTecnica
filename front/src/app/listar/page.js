@@ -10,18 +10,44 @@ export default function ListarMotos() {
     setMotos(data.data);
     setFetched(true);
   };
+
+  const checkOut = async(placa)=>{
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}leaving`, {
+      method: 'POST',
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({placa: placa})
+    })
+    const data = await response.json()
+    console.log(data.data)
+  }
+  const deleteMoto = async(placa)=>{
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}delete`, {
+      method: 'POST',
+      headers:{
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({placa: placa})
+    })
+    const data = await response.json()
+    console.log(data)
+  }
+
   useEffect(() => {
     getData();
   }, []);
   return (
     <main className="flex flex-col ml-10 mr-10">
-      <h1 className="text-3xl">Motos listing</h1>
+      <h1 className="text-3xl">Lista de motos</h1>
       {fetched && (
         <section className="flex w-full h-full">
           <ul className="flex flex-col gap-5">
-            {Object.keys(motos).map((motoId, index) => (
+            {Object.keys(motos).map((motoId) => (
               <li key={motoId}>
-                <MotoDetails moto={motos[motoId]} />
+                <MotoDetails moto={motos[motoId]} checkOut={checkOut} deleteMoto={deleteMoto} />
               </li>
             ))}
           </ul>
@@ -31,10 +57,10 @@ export default function ListarMotos() {
   );
 }
 
-function MotoDetails({ moto }) {
+function MotoDetails({ moto, checkOut, deleteMoto }) {
   return (
     <div>
-      <h2 className="text-xl">Moto Details</h2>
+      <h2 className="text-xl">Detalles moto</h2>
       <p>
         <b>Estado:</b> {moto.estado}
       </p>
@@ -51,6 +77,8 @@ function MotoDetails({ moto }) {
       <p>
         <b>Placa:</b> {moto.placa}
       </p>
+      <button onClick={()=>checkOut(moto.placa)}>Check Out</button>
+      <button onClick={()=>deleteMoto(moto.placa)}>Borrar</button>
     </div>
   );
 }

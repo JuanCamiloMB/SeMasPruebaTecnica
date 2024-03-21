@@ -1,3 +1,4 @@
-export default function Home() {
+'use client'
+export default function Factura() {
     return <></>;
   }
