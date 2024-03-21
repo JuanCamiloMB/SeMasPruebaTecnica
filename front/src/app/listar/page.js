@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
+import Modal from "react-modal";
 
 export default function ListarMotos() {
   const [motos, setMotos] = useState(null);
   const [fetched, setFetched] = useState(null);
+
   const getData = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}`);
     const data = await response.json();
@@ -11,30 +13,36 @@ export default function ListarMotos() {
     setFetched(true);
   };
 
-  const checkOut = async(placa)=>{
+  const checkOut = async (placa, closeModal=null) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}leaving`, {
-      method: 'POST',
-      headers:{
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({placa: placa})
-    })
-    const data = await response.json()
-    console.log(data.data)
-  }
-  const deleteMoto = async(placa)=>{
+      body: JSON.stringify({ placa: placa }),
+    });
+    const data = await response.json();
+    getData();
+    if(closeModal){
+      closeModal('checkOut')
+    }
+  };
+  const deleteMoto = async (placa, closeModal=null) => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}delete`, {
-      method: 'POST',
-      headers:{
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({placa: placa})
-    })
-    const data = await response.json()
-    console.log(data)
-  }
+      body: JSON.stringify({ placa: placa }),
+    });
+    const data = await response.json();
+    getData();
+    if(closeModal){
+      closeModal('delete')
+    }
+  };
 
   useEffect(() => {
     getData();
@@ -47,7 +55,11 @@ export default function ListarMotos() {
           <ul className="flex flex-col gap-5">
             {Object.keys(motos).map((motoId) => (
               <li key={motoId}>
-                <MotoDetails moto={motos[motoId]} checkOut={checkOut} deleteMoto={deleteMoto} />
+                <MotoDetails
+                  moto={motos[motoId]}
+                  checkOut={checkOut}
+                  deleteMoto={deleteMoto}
+                />
               </li>
             ))}
           </ul>
@@ -58,8 +70,39 @@ export default function ListarMotos() {
 }
 
 function MotoDetails({ moto, checkOut, deleteMoto }) {
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [checkOutModal, setCheckOutModal] = useState(false);
+
+  function openModal(type) {
+    if (type === "checkOut") {
+      setCheckOutModal(true);
+    }
+    if (type === "delete") {
+      setDeleteModal(true);
+    }
+  }
+
+  function closeModal(type) {
+    if (type === "checkOut") {
+      setCheckOutModal(false);
+    }
+    if (type === "delete") {
+      setDeleteModal(false);
+    }
+  }
+  Modal.setAppElement("main");
   return (
     <div>
+      <Modal isOpen={deleteModal} onRequestClose={closeModal}>
+        <h2>Seguro quiere eliminar moto con placa {moto.placa} ?</h2>
+        <button onClick={() => deleteMoto(moto.placa, closeModal)}>Eliminar</button>
+        <button onClick={() => closeModal("delete")}>close</button>
+      </Modal>
+      <Modal isOpen={checkOutModal} onRequestClose={closeModal}>
+        <h2>CheckOut de moto con placa {moto.placa} ?</h2>
+        <button onClick={() => checkOut(moto.placa, closeModal)}>CheckOut</button>
+        <button onClick={() => closeModal("checkOut")}>close</button>
+      </Modal>
       <h2 className="text-xl">Detalles moto</h2>
       <p>
         <b>Estado:</b> {moto.estado}
@@ -77,8 +120,8 @@ function MotoDetails({ moto, checkOut, deleteMoto }) {
       <p>
         <b>Placa:</b> {moto.placa}
       </p>
-      <button onClick={()=>checkOut(moto.placa)}>Check Out</button>
-      <button onClick={()=>deleteMoto(moto.placa)}>Borrar</button>
+      <button onClick={() => openModal("checkOut")}>Check Out</button>
+      <button onClick={() => openModal("delete")}>Borrar</button>
     </div>
   );
 }
