@@ -7,9 +7,11 @@ const {
   STORAGEBUCKET,
   MESSAGINGSENDERID,
   APPID,
+  PORT
 } = process.env;
 
 module.exports = {
+  port: PORT,
   firebaseConfig: {
     apiKey: APIKEY,
     authDomain: AUTHDOMAIN,
