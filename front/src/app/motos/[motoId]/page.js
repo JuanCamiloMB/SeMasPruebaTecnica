@@ -5,8 +5,6 @@ export default function Moto({ params }) {
   const [moto, setMoto] = useState(null);
   const [fetched, setFetched] = useState(false);
   const [originalData, setOriginalData] = useState(null);
-  const [btnDisabled, setBtnDisabled] = useState(false);
-  const [updateMsg, setUpdateMsg] = useState(false);
 
   const getData = async () => {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}search`, {
@@ -27,8 +25,54 @@ export default function Moto({ params }) {
     setFetched(true);
   };
 
+  useEffect(() => {
+    getData();
+  }, []);
+  return (
+    <>
+      {fetched && moto.horaSalida && <Factura moto={moto} />}
+      {fetched && !moto.horaSalida && <EditarMoto moto={moto} setMoto={setMoto} getData={getData} originalData={originalData}/>}
+    </>
+  );
+}
+
+function Factura({ moto }) {
+  return (
+    <>
+      <h2 className="text-xl">Detalles moto</h2>
+      <p>
+        <b>Estado:</b> {moto.estado}
+      </p>
+      <p>
+        <b>Modelo:</b> {moto.modelo}
+      </p>
+      <p>
+        <b>Celda:</b> {moto.celda}
+      </p>
+      <p>
+        <b>Hora de Ingreso:</b>
+        {new Date(moto.horaIngreso.seconds * 1000).toLocaleString()}
+      </p>
+      <p>
+        <b>Placa:</b> {moto.placa}
+      </p>
+
+      <p>
+        <b>Hora de salida:</b>{" "}
+        {new Date(moto.horaSalida.seconds * 1000).toLocaleString()}
+      </p>
+      <p>
+        <b>Precio:</b> {moto.precio}
+      </p>
+    </>
+  );
+}
+
+function EditarMoto({ moto, setMoto, getData, originalData }) {
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const [updateMsg, setUpdateMsg] = useState(false);
   const handleChange = (e) => {
-    setUpdateMsg(false)
+    setUpdateMsg(false);
     const { name, value } = e.target;
     setMoto({
       ...moto,
@@ -49,57 +93,54 @@ export default function Moto({ params }) {
     });
     if (response.status === 200) setBtnDisabled(false);
     getData();
-    setUpdateMsg(true)
+    setUpdateMsg(true);
   };
-
-  useEffect(() => {
-    getData();
-  }, []);
   return (
     <>
-      {fetched && (
-        <main className="flex flex-col items-center justify-center gap-4">
-          <h1 className="text-2xl">Editar moto</h1>
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-row gap-10">
-              <label htmlFor="placa">Placa</label>
-              <input
-                id="placa"
-                name="placa"
-                defaultValue={moto.placa}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="flex flex-row gap-10">
-              <label htmlFor="modelo">Modelo</label>
-              <input
-                id="modelo"
-                name="modelo"
-                defaultValue={moto.modelo}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="flex flex-row gap-10">
-              <label htmlFor="celda">Celda</label>
-              <input
-                id="celda"
-                name="celda"
-                defaultValue={moto.celda}
-                onChange={handleChange}
-              />
-            </div>
-            <button
-              id="submit-btn"
-              type="submit"
-              className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors"
-              disabled={btnDisabled}
-            >
-              Confirmar
-            </button>
-            <p className={updateMsg ? "flex" : "hidden"}>Update done!</p>
-          </form>
-        </main>
-      )}
+      <main className="flex flex-col items-center justify-center gap-4">
+        <h1 className="text-2xl">Editar moto</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-row gap-10">
+            <label htmlFor="placa">Placa</label>
+            <input
+              id="placa"
+              name="placa"
+              defaultValue={moto.placa}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="flex flex-row gap-10">
+            <label htmlFor="modelo">Modelo</label>
+            <input
+              id="modelo"
+              name="modelo"
+              defaultValue={moto.modelo}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="flex flex-row gap-10">
+            <label htmlFor="celda">Celda</label>
+            <input
+              id="celda"
+              name="celda"
+              defaultValue={moto.celda}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <button
+            id="submit-btn"
+            type="submit"
+            className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors"
+            disabled={btnDisabled}
+          >
+            Confirmar
+          </button>
+          <p className={updateMsg ? "flex" : "hidden"}>Update done!</p>
+        </form>
+      </main>
     </>
   );
 }

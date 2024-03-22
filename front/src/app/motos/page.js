@@ -18,7 +18,7 @@ export default function Motos() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}leaving`, {
       method: "POST",
       headers: {
-        "Accept": "application/json",
+        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ placa: placa }),
@@ -149,20 +149,35 @@ function MotoDetails({ motoId, moto, checkOut, deleteMoto }) {
         <p>
           <b>Placa:</b> {moto.placa}
         </p>
+        {moto.horaSalida && (
+          <>
+            <p>
+              <b>Hora de salida:</b>{" "}
+              {new Date(moto.horaSalida.seconds * 1000).toLocaleString()}
+            </p>
+            <p>
+              <b>Precio:</b> {moto.precio}
+            </p>
+          </>
+        )}
         <div className="flex flex-row gap-5">
-          <button
-            className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors"
-            onClick={() => openModal("checkOut")}
-          >
-            Check Out
-          </button>
+          {!moto.horaSalida && (
+            <button
+              className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors"
+              onClick={() => openModal("checkOut")}
+            >
+              Check Out
+            </button>
+          )}
           <button
             className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors"
             onClick={() => openModal("delete")}
           >
             Borrar
           </button>
-          <Link href={`/motos/${motoId}`}>Editar</Link>
+          <Link href={`/motos/${motoId}`}>
+            {moto.horaSalida ? "Factura" : "Editar"}
+          </Link>
         </div>
       </div>
     </>

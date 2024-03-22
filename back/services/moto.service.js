@@ -25,15 +25,15 @@ async function getMotos() {
   }
 }
 
-async function getMoto(searchString, type= 'id') {
+async function getMoto(searchString, type = "id") {
   try {
-    if(type === 'id'){
+    if (type === "id") {
       const docSnap = await getDoc(doc(db, "motos", searchString));
-      if (docSnap.exists()){
-        return docSnap.data()
+      if (docSnap.exists()) {
+        return docSnap.data();
       }
     }
-    if(type === 'placa'){
+    if (type === "placa") {
       const collectionRef = collection(db, "motos");
       const q = query(
         collectionRef,
@@ -41,7 +41,7 @@ async function getMoto(searchString, type= 'id') {
         limit(1)
       );
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs[0].data()
+      return querySnapshot.docs[0].data();
     }
     return false;
   } catch (e) {
@@ -65,7 +65,14 @@ async function createMoto({ placa, modelo, celda }) {
   }
 }
 
-async function updateMoto({ placa, modelo, celda, originalPlaca, originalModelo, originalCelda }) {
+async function updateMoto({
+  placa,
+  modelo,
+  celda,
+  originalPlaca,
+  originalModelo,
+  originalCelda,
+}) {
   try {
     const collectionRef = collection(db, "motos");
     const q = query(
@@ -107,7 +114,7 @@ async function leavingMoto(placa) {
       // console.log("Document data:", docSnap.data());
       const startDate = new Date(docSnap.data().horaIngreso.seconds * 1000);
       endDate = new Date();
-      difference = calculateTimeDifference(startDate, endDate);
+      difference = new Date(endDate - startDate).getUTCHours();
     } else {
       // docSnap.data() will be undefined in this case
       console.log("No such document!");
@@ -117,7 +124,7 @@ async function leavingMoto(placa) {
     await updateDoc(docRef, {
       estado: "LEAVE",
       horaSalida: endDate,
-      precio: difference.hours * 1000, //1000 pesos por hora
+      precio: difference * 1000, //1000 pesos por hora
     });
     const updatedDoc = await getDoc(docRef);
     return updatedDoc.data();
@@ -139,24 +146,11 @@ async function deleteMoto(placa) {
   }
 }
 
-function calculateTimeDifference(startDate, endDate) {
-  // Ensure valid Date objects
-  if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
-    throw new Error("Invalid date objects provided");
-  }
-
-  // Get the difference in milliseconds
-  const timeDifference = endDate.getTime() - startDate.getTime();
-
-  // Convert milliseconds to hours, minutes, and seconds
-  const hours = Math.floor(
-    (timeDifference % (1000 * 60 * 60)) / (1000 * 60 * 60)
-  );
-  const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-  // Return an object with the time components
-  return { hours, minutes, seconds };
-}
-
-module.exports = { getMotos, getMoto, createMoto, updateMoto, leavingMoto, deleteMoto };
+module.exports = {
+  getMotos,
+  getMoto,
+  createMoto,
+  updateMoto,
+  leavingMoto,
+  deleteMoto,
+};
