@@ -34,6 +34,7 @@ async function getMoto(searchString, type = "id") {
       }
     }
     if (type === "placa") {
+      const document = {}
       const collectionRef = collection(db, "motos");
       const q = query(
         collectionRef,
@@ -41,7 +42,8 @@ async function getMoto(searchString, type = "id") {
         limit(1)
       );
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs[0].data();
+      document[querySnapshot.docs[0].id] = querySnapshot.docs[0].data()
+      return document;
     }
     return false;
   } catch (e) {

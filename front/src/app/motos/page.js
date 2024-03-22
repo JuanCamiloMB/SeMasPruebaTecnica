@@ -6,12 +6,28 @@ import Modal from "react-modal";
 export default function Motos() {
   const [motos, setMotos] = useState(null);
   const [fetched, setFetched] = useState(null);
+  const [search, setSearch] = useState("");
 
   const getData = async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}`);
-    const data = await response.json();
-    setMotos(data.data);
-    setFetched(true);
+    setFetched(false);
+    if (search) {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}search`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ searchString: search, type: "placa" }),
+      });
+      const data = await response.json();
+      setMotos(data.data);
+      setFetched(true);
+    } else {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND}`);
+      const data = await response.json();
+      setMotos(data.data);
+      setFetched(true);
+    }
   };
 
   const checkOut = async (placa, closeModal = null) => {
@@ -45,25 +61,46 @@ export default function Motos() {
     }
   };
 
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
+
   useEffect(() => {
     getData();
   }, []);
   return (
     <main className="flex flex-col ml-10 mr-10">
       <h1 className="text-3xl">Lista de motos</h1>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          getData();
+        }}
+      >
+        <input
+          type="search"
+          placeholder="Buscar Moto"
+          onChange={handleChange}
+        />
+        <button type="submit">Buscar</button>
+      </form>
       {fetched && (
         <section className="flex w-full h-full mt-10">
-          <ul className="grid grid-cols-4 gap-16">
-            {Object.keys(motos).map((motoId) => (
-              <li key={motoId}>
-                <MotoDetails
-                  motoId={motoId}
-                  moto={motos[motoId]}
-                  checkOut={checkOut}
-                  deleteMoto={deleteMoto}
-                />
-              </li>
-            ))}
+          <ul className="grid grid-cols-3 gap-16">
+            {Object.keys(motos).map(
+              (
+                motoId //Aca está el problema
+              ) => (
+                <li key={motoId}>
+                  <MotoDetails
+                    motoId={motoId}
+                    moto={motos[motoId]}
+                    checkOut={checkOut}
+                    deleteMoto={deleteMoto}
+                  />
+                </li>
+              )
+            )}
           </ul>
         </section>
       )}
@@ -175,7 +212,7 @@ function MotoDetails({ motoId, moto, checkOut, deleteMoto }) {
           >
             Borrar
           </button>
-          <Link href={`/motos/${motoId}`}>
+          <Link href={`/motos/${motoId}`} className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors">
             {moto.horaSalida ? "Factura" : "Editar"}
           </Link>
         </div>
