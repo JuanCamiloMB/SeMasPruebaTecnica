@@ -6,7 +6,6 @@ export default function Home() {
     <div className="flex flex-row w-full h-full items-center justify-center gap-6">
       <Link href={'/agregar'}>Agregar moto</Link>
       <Link href={'/motos'}>Listar motos</Link>
-      <Link href={'/buscar'}>Buscar moto</Link>
     </div>
   </main>
   </>);

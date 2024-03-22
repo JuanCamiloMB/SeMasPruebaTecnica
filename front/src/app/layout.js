@@ -13,7 +13,6 @@ export default function RootLayout({ children }) {
         <nav className="m-5 flex flex-row gap-5">
           <Link className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors" href={"/agregar"}>Agregar moto</Link>
           <Link className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors" href={"/motos"}>Listar motos</Link>
-          <Link className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors" href={"/buscar"}>Buscar moto</Link>
         </nav>
         {children}
       </body>
