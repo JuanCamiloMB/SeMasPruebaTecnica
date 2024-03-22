@@ -7,6 +7,7 @@ Esta es la prueba tecnica para el grupo de emprendimiento Se+ de la Universidad 
 - Para el Front-end se utilizó NextJS con App Router.
 - Para el Back-end se utilizó ExpressJS en NodeJS environment.
 - Para la base de datos se utilizó la base de datos noSQL firestore de Firebase.
+- Están las dos aplicaciones desplegadas en una maquina virtual en Google Cloud Computer Engine
 
 ## Requisitos
 - NodeJS version >= 20.10.0
@@ -14,6 +15,8 @@ Esta es la prueba tecnica para el grupo de emprendimiento Se+ de la Universidad 
 
 
 ## Como usar el proyecto...
+La aplicacion se encuentra live en http://34.122.122.1:3001/
+
 ⚠️Primero se ejecuta el back y luego el front. Si vas tienes problemas ajusta los puertos en las variables de entorno.⚠️
 
 1. Clonar el repo https://github.com/JuanCamiloMB/SeMasPruebaTecnica.git
