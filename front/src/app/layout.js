@@ -1,4 +1,5 @@
 import "./globals.css";
+import Link from "next/link";
 
 export const metadata = {
   title: "Create Next App",
@@ -8,7 +9,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <nav className="m-5 flex flex-row gap-5">
+          <Link className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors" href={"/agregar"}>Agregar moto</Link>
+          <Link className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors" href={"/editar"}>Editar datos moto</Link>
+          <Link className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors" href={"/motos"}>Listar motos</Link>
+          <Link className="bg-slate-500 p-5 rounded-xl hover:bg-slate-300 transition-colors" href={"/buscar"}>Buscar moto</Link>
+        </nav>
+        {children}
+      </body>
     </html>
   );
 }

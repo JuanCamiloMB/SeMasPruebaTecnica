@@ -25,6 +25,30 @@ async function getMotos() {
   }
 }
 
+async function getMoto(searchString, type= 'id') {
+  try {
+    if(type === 'id'){
+      const docSnap = await getDoc(doc(db, "motos", searchString));
+      if (docSnap.exists()){
+        return docSnap.data()
+      }
+    }
+    if(type === 'placa'){
+      const collectionRef = collection(db, "motos");
+      const q = query(
+        collectionRef,
+        where("placa", "==", searchString),
+        limit(1)
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs[0].data()
+    }
+    return false;
+  } catch (e) {
+    console.error("Error fetching motos", e);
+  }
+}
+
 async function createMoto({ placa, modelo, celda }) {
   try {
     const now = new Date();
@@ -41,13 +65,14 @@ async function createMoto({ placa, modelo, celda }) {
   }
 }
 
-async function updateMoto({ placa, modelo, celda }) {
+async function updateMoto({ placa, modelo, celda, originalPlaca, originalModelo, originalCelda }) {
   try {
     const collectionRef = collection(db, "motos");
     const q = query(
       collectionRef,
-      where("placa", "==", placa),
-      where("estado", "==", "INSIDE"),
+      where("placa", "==", originalPlaca),
+      where("modelo", "==", originalModelo),
+      where("celda", "==", originalCelda),
       limit(1)
     );
     const querySnapshot = await getDocs(q);
@@ -134,4 +159,4 @@ function calculateTimeDifference(startDate, endDate) {
   return { hours, minutes, seconds };
 }
 
-module.exports = { getMotos, createMoto, updateMoto, leavingMoto, deleteMoto };
+module.exports = { getMotos, getMoto, createMoto, updateMoto, leavingMoto, deleteMoto };

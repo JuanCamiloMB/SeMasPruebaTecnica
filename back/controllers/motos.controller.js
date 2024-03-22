@@ -2,6 +2,7 @@ const express = require("express");
 const motosRouter = express.Router();
 const {
   getMotos,
+  getMoto,
   createMoto,
   updateMoto,
   leavingMoto,
@@ -13,6 +14,11 @@ motosRouter.get("/", async (req, res) => {
   const data = await getMotos();
   res.json({ data: data });
 });
+
+motosRouter.post("/search", async (req, res) => {
+  const data = await getMoto(req.body.searchString, req.body.type);
+  res.json({ data: data });
+})
 
 motosRouter.post("/create", async (req, res) => {
   const newData = req.body;
