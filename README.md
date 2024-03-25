@@ -25,13 +25,13 @@ La aplicacion se encuentra live en http://35.184.51.23:3001/
 - Ejecutar `npm install` ó `pnpm install`
 - Crear un archivo .env.local con las variables
 ```
-APIKEY= "AIzaSyAqWCShXLKz-xnqK33_DABrE388F0pHsYY"
-AUTHDOMAIN= "semaspruebatecnica.firebaseapp.com"
-PROJECTID= "semaspruebatecnica"
-STORAGEBUCKET= "semaspruebatecnica.appspot.com"
-MESSAGINGSENDERID= "649726170518"
-APPID= "1:649726170518:web:1ba383419ad364ca75f9b7"
-PORT= 3000 ⚠️
+APIKEY="AIzaSyAqWCShXLKz-xnqK33_DABrE388F0pHsYY"
+AUTHDOMAIN="semaspruebatecnica.firebaseapp.com"
+PROJECTID="semaspruebatecnica"
+STORAGEBUCKET="semaspruebatecnica.appspot.com"
+MESSAGINGSENDERID="649726170518"
+APPID="1:649726170518:web:1ba383419ad364ca75f9b7"
+PORT=3000 ⚠️
 ```
 - Iniciar la aplicación back con `node app.js`
 
