@@ -15,7 +15,7 @@ Esta es la prueba tecnica para el grupo de emprendimiento Se+ de la Universidad 
 
 
 ## Como usar el proyecto...
-La aplicacion se encuentra live en http://34.122.122.1:3001/
+La aplicacion se encuentra live en http://35.184.51.23:3001/
 
 ⚠️Primero se ejecuta el back y luego el front. Si vas tienes problemas ajusta los puertos en las variables de entorno.⚠️
 
