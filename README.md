@@ -21,14 +21,14 @@ Esta es la prueba tecnica para el grupo de emprendimiento Se+ de la Universidad 
 2. Configurar el Back:
 - Ingresar a la carpeta back
 - Ejecutar `npm install` ó `pnpm install`
-- Crear un archivo .env.local con las variables
+- Crear un archivo .env.local con las variables de firebase
 ```
-APIKEY="AIzaSyAqWCShXLKz-xnqK33_DABrE388F0pHsYY"
-AUTHDOMAIN="semaspruebatecnica.firebaseapp.com"
-PROJECTID="semaspruebatecnica"
-STORAGEBUCKET="semaspruebatecnica.appspot.com"
-MESSAGINGSENDERID="649726170518"
-APPID="1:649726170518:web:1ba383419ad364ca75f9b7"
+APIKEY=
+AUTHDOMAIN=
+PROJECTID=
+STORAGEBUCKET=
+MESSAGINGSENDERID=
+APPID=
 PORT=3000 ⚠️
 ```
 - Iniciar la aplicación back con `node app.js`
